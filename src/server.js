@@ -10,13 +10,17 @@ dotenv.config();
 
 const app = express();
 
-// const corsOptions = {
-//   origin: 'https://your-allowed-domain.com', // Replace with your domain
-//   optionsSuccessStatus: 200
-// };
-
 // middleware
-app.use(cors())
+const allowedOrigins = ['http://localhost:8081', 'exp://10.131.69.200:8081'];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(rateLimiter);
 app.use(express.json());
 
